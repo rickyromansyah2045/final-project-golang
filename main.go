@@ -5,5 +5,12 @@ import (
 )
 
 func main() {
-	database.ConnectDB()
+
+	db, err := database.ConnectDB()
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	_ = db
 }
