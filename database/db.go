@@ -1,6 +1,7 @@
 package database
 
 import (
+	"final-project-golang/models"
 	"fmt"
 
 	"gorm.io/driver/postgres"
@@ -30,7 +31,7 @@ func ConnectDB() *gorm.DB {
 		panic(err.Error())
 	}
 
-	db.AutoMigrate()
+	db.AutoMigrate(models.User{}, models.Sosial{}, models.Photo{}, models.Comment{})
 
 	return db
 }
