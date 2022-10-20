@@ -21,7 +21,7 @@ var (
 	err error
 )
 
-func ConnectDB() (*gorm.DB, error) {
+func ConnectDB() *gorm.DB {
 	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		HOST_POSTGRES, PORT_POSTGRES, USER_POSTGRES, PASS_POSTGRES, DB_POSTGRES,
 	)
@@ -31,7 +31,7 @@ func ConnectDB() (*gorm.DB, error) {
 		panic(err.Error())
 	}
 
-	db.Debug().AutoMigrate(models.User{}, models.Sosial{}, models.Photo{}, models.Comment{})
+	db.Debug().AutoMigrate(models.User{}, models.Social{}, models.Photo{}, models.Comment{})
 
-	return db, nil
+	return db
 }

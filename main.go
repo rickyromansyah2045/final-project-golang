@@ -1,16 +1,9 @@
 package main
 
-import (
-	"final-project-golang/database"
-)
+import "final-project-golang/routes"
 
 func main() {
+	r := routes.StartApp()
 
-	db, err := database.ConnectDB()
-
-	if err != nil {
-		panic(err.Error())
-	}
-
-	_ = db
+	r.Run(":8001")
 }

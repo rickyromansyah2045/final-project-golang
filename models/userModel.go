@@ -18,7 +18,7 @@ type User struct {
 	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 	Photo     []Photo    `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	Comment   []Comment  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	Sosial    []Sosial   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Sosial    []Social   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {

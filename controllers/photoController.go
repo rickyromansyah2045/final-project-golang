@@ -155,7 +155,7 @@ func (p *PhotoController) Update(ctx *gin.Context) {
 		return
 	}
 
-	updatePhoto := models.Photo{
+	updatedPhoto := models.Photo{
 		Title:    photoReq.Title,
 		Caption:  photoReq.Caption,
 		PhotoUrl: photoReq.PhotoUrl,
@@ -176,7 +176,7 @@ func (p *PhotoController) Update(ctx *gin.Context) {
 		return
 	}
 
-	err = p.db.Model(&photo).Updates(updatePhoto).Error
+	err = p.db.Model(&photo).Updates(updatedPhoto).Error
 	if err != nil {
 		helpers.BadRequestResponse(ctx, err.Error())
 		return
