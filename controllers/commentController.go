@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -73,7 +72,7 @@ func (c *CommentController) Create(ctx *gin.Context) {
 
 	err := ctx.ShouldBindJSON(&commentReq)
 	if err != nil {
-		helpers.BadRequestResponse(ctx, err.Error())
+		helpers.BadRequestResponse(ctx, err)
 		return
 	}
 
@@ -83,23 +82,17 @@ func (c *CommentController) Create(ctx *gin.Context) {
 		UserId:  uint(userId.(float64)),
 	}
 
-	_, errCreate := govalidator.ValidateStruct(&newComment)
-	if errCreate != nil {
-		helpers.BadRequestResponse(ctx, err.Error())
-		return
-	}
-
 	err = c.db.Create(&newComment).Error
 	if err != nil {
 		if err.Error() == gorm.ErrRecordNotFound.Error() {
-			helpers.NotFoundResponse(ctx, err.Error())
+			helpers.NotFoundResponse(ctx, err)
 			return
 		}
 		if err.Error() == `ERROR: insert or update on table "comments" violates foreign key constraint "fk_photos_comment" (SQLSTATE 23503)` {
 			helpers.NotFoundResponse(ctx, "Photo not found")
 			return
 		}
-		helpers.InternalServerJsonResponse(ctx, err.Error())
+		helpers.InternalServerJsonResponse(ctx, err)
 		return
 	}
 
@@ -119,11 +112,11 @@ func (c *CommentController) Get(ctx *gin.Context) {
 
 	err := c.db.Preload("User").Preload("Photo").Find(&comments).Error
 	if err != nil {
-		if err.Error() == gorm.ErrRecordNotFound.Error() {
-			helpers.NotFoundResponse(ctx, err.Error())
+		if err == gorm.ErrRecordNotFound {
+			helpers.NotFoundResponse(ctx, err)
 			return
 		}
-		helpers.InternalServerJsonResponse(ctx, err.Error())
+		helpers.InternalServerJsonResponse(ctx, err)
 		return
 	}
 
@@ -170,7 +163,7 @@ func (c *CommentController) Update(ctx *gin.Context) {
 
 	err := ctx.ShouldBindJSON(&commentReq)
 	if err != nil {
-		helpers.BadRequestResponse(ctx, err.Error())
+		helpers.BadRequestResponse(ctx, err)
 		return
 	}
 
@@ -180,11 +173,11 @@ func (c *CommentController) Update(ctx *gin.Context) {
 
 	err = c.db.First(&comment, commentId).Error
 	if err != nil {
-		if err.Error() == gorm.ErrRecordNotFound.Error() {
+		if err == gorm.ErrRecordNotFound {
 			helpers.NotFoundResponse(ctx, "data not found")
 			return
 		}
-		helpers.InternalServerJsonResponse(ctx, err.Error())
+		helpers.InternalServerJsonResponse(ctx, err)
 		return
 	}
 
@@ -195,7 +188,7 @@ func (c *CommentController) Update(ctx *gin.Context) {
 
 	err = c.db.Model(&comment).Updates(updateComment).Error
 	if err != nil {
-		helpers.BadRequestResponse(ctx, err.Error())
+		helpers.BadRequestResponse(ctx, err)
 		return
 	}
 
@@ -217,11 +210,11 @@ func (c *CommentController) Delete(ctx *gin.Context) {
 
 	err := c.db.First(&comment, commentId).Error
 	if err != nil {
-		if err.Error() == gorm.ErrRecordNotFound.Error() {
+		if err == gorm.ErrRecordNotFound {
 			helpers.NotFoundResponse(ctx, "data not found")
 			return
 		}
-		helpers.InternalServerJsonResponse(ctx, err.Error())
+		helpers.InternalServerJsonResponse(ctx, err)
 		return
 	}
 
@@ -232,11 +225,11 @@ func (c *CommentController) Delete(ctx *gin.Context) {
 
 	err = c.db.Delete(&comment).Error
 	if err != nil {
-		if err.Error() == gorm.ErrRecordNotFound.Error() {
-			helpers.NotFoundResponse(ctx, err.Error())
+		if err == gorm.ErrRecordNotFound {
+			helpers.NotFoundResponse(ctx, err)
 			return
 		}
-		helpers.InternalServerJsonResponse(ctx, err.Error())
+		helpers.InternalServerJsonResponse(ctx, err)
 		return
 	}
 

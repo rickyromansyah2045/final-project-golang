@@ -33,7 +33,7 @@ func Auth() gin.HandlerFunc {
 
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"error": err.Error(),
+				"error": err,
 			})
 			return
 		}

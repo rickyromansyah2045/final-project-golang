@@ -67,7 +67,7 @@ func (p *PhotoController) Create(ctx *gin.Context) {
 
 	err := ctx.ShouldBindJSON(&photoReq)
 	if err != nil {
-		helpers.BadRequestResponse(ctx, err.Error())
+		helpers.BadRequestResponse(ctx, err)
 		return
 	}
 
@@ -78,19 +78,13 @@ func (p *PhotoController) Create(ctx *gin.Context) {
 		UserId:   uint(userId.(float64)),
 	}
 
-	_, errCreate := govalidator.ValidateStruct(&newPhoto)
-	if errCreate != nil {
-		helpers.BadRequestResponse(ctx, err.Error())
-		return
-	}
-
 	err = p.db.Create(&newPhoto).Error
 	if err != nil {
 		if err.Error() == gorm.ErrRecordNotFound.Error() {
-			helpers.NotFoundResponse(ctx, err.Error())
+			helpers.NotFoundResponse(ctx, err)
 			return
 		}
-		helpers.InternalServerJsonResponse(ctx, err.Error())
+		helpers.InternalServerJsonResponse(ctx, err)
 		return
 	}
 
@@ -112,10 +106,10 @@ func (p *PhotoController) Get(ctx *gin.Context) {
 	err := p.db.Preload("User").Find(&photos).Error
 	if err != nil {
 		if err.Error() == gorm.ErrRecordNotFound.Error() {
-			helpers.NotFoundResponse(ctx, err.Error())
+			helpers.NotFoundResponse(ctx, err)
 			return
 		}
-		helpers.BadRequestResponse(ctx, err.Error())
+		helpers.BadRequestResponse(ctx, err)
 		return
 	}
 
@@ -151,7 +145,7 @@ func (p *PhotoController) Update(ctx *gin.Context) {
 
 	err := ctx.ShouldBindJSON(&photoReq)
 	if err != nil {
-		helpers.BadRequestResponse(ctx, err.Error())
+		helpers.BadRequestResponse(ctx, err)
 		return
 	}
 
@@ -161,13 +155,20 @@ func (p *PhotoController) Update(ctx *gin.Context) {
 		PhotoUrl: photoReq.PhotoUrl,
 	}
 
+	// Tambahin validasi Update
+	_, errCreate := govalidator.ValidateStruct(&updatedPhoto)
+	if errCreate != nil {
+		helpers.BadRequestResponse(ctx, err)
+		return
+	}
+
 	err = p.db.First(&photo, photoId).Error
 	if err != nil {
 		if err.Error() == gorm.ErrRecordNotFound.Error() {
 			helpers.NotFoundResponse(ctx, "data not found")
 			return
 		}
-		helpers.InternalServerJsonResponse(ctx, err.Error())
+		helpers.InternalServerJsonResponse(ctx, err)
 		return
 	}
 
@@ -178,7 +179,7 @@ func (p *PhotoController) Update(ctx *gin.Context) {
 
 	err = p.db.Model(&photo).Updates(updatedPhoto).Error
 	if err != nil {
-		helpers.BadRequestResponse(ctx, err.Error())
+		helpers.BadRequestResponse(ctx, err)
 		return
 	}
 
@@ -205,7 +206,7 @@ func (p *PhotoController) Delete(ctx *gin.Context) {
 			helpers.NotFoundResponse(ctx, "data not found")
 			return
 		}
-		helpers.InternalServerJsonResponse(ctx, err.Error())
+		helpers.InternalServerJsonResponse(ctx, err)
 		return
 	}
 

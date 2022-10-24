@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -67,7 +66,7 @@ func (s *SocialController) Create(ctx *gin.Context) {
 
 	err := ctx.ShouldBindJSON(&socialReq)
 	if err != nil {
-		helpers.BadRequestResponse(ctx, err.Error())
+		helpers.BadRequestResponse(ctx, err)
 		return
 	}
 
@@ -77,19 +76,13 @@ func (s *SocialController) Create(ctx *gin.Context) {
 		UserId:         uint(userId.(float64)),
 	}
 
-	_, errCreate := govalidator.ValidateStruct(&newSocial)
-	if errCreate != nil {
-		helpers.BadRequestResponse(ctx, errCreate.Error())
-		return
-	}
-
 	err = s.db.Create(&newSocial).Error
 	if err != nil {
 		if err.Error() == gorm.ErrRecordNotFound.Error() {
-			helpers.NotFoundResponse(ctx, err.Error())
+			helpers.NotFoundResponse(ctx, err)
 			return
 		}
-		helpers.InternalServerJsonResponse(ctx, err.Error())
+		helpers.InternalServerJsonResponse(ctx, err)
 		return
 	}
 
@@ -110,10 +103,10 @@ func (s *SocialController) Get(ctx *gin.Context) {
 	err := s.db.Preload("User").Find(&socials).Error
 	if err != nil {
 		if err.Error() == gorm.ErrRecordNotFound.Error() {
-			helpers.NotFoundResponse(ctx, err.Error())
+			helpers.NotFoundResponse(ctx, err)
 			return
 		}
-		helpers.InternalServerJsonResponse(ctx, err.Error())
+		helpers.InternalServerJsonResponse(ctx, err)
 		return
 	}
 
@@ -155,7 +148,7 @@ func (s *SocialController) Update(ctx *gin.Context) {
 
 	err := ctx.ShouldBindJSON(&socialReq)
 	if err != nil {
-		helpers.BadRequestResponse(ctx, err.Error())
+		helpers.BadRequestResponse(ctx, err)
 		return
 	}
 
@@ -171,7 +164,7 @@ func (s *SocialController) Update(ctx *gin.Context) {
 			helpers.NotFoundResponse(ctx, "data not found")
 			return
 		}
-		helpers.InternalServerJsonResponse(ctx, err.Error())
+		helpers.InternalServerJsonResponse(ctx, err)
 		return
 	}
 
@@ -182,7 +175,7 @@ func (s *SocialController) Update(ctx *gin.Context) {
 
 	err = s.db.Model(&social).Updates(updatedSocial).Error
 	if err != nil {
-		helpers.BadRequestResponse(ctx, err.Error())
+		helpers.BadRequestResponse(ctx, err)
 		return
 	}
 
@@ -208,7 +201,7 @@ func (s *SocialController) Delete(ctx *gin.Context) {
 			helpers.NotFoundResponse(ctx, "data not found")
 			return
 		}
-		helpers.InternalServerJsonResponse(ctx, err.Error())
+		helpers.InternalServerJsonResponse(ctx, err)
 		return
 	}
 
@@ -220,10 +213,10 @@ func (s *SocialController) Delete(ctx *gin.Context) {
 	err = s.db.Delete(&social).Error
 	if err != nil {
 		if err.Error() == gorm.ErrRecordNotFound.Error() {
-			helpers.NotFoundResponse(ctx, err.Error())
+			helpers.NotFoundResponse(ctx, err)
 			return
 		}
-		helpers.InternalServerJsonResponse(ctx, err.Error())
+		helpers.InternalServerJsonResponse(ctx, err)
 		return
 	}
 

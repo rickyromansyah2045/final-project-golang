@@ -28,3 +28,12 @@ func (p *Photo) BeforeCreate(tx *gorm.DB) (err error) {
 
 	return
 }
+
+func (p *Photo) BeforeUpdate(tx *gorm.DB) (err error) {
+	_, errCreate := govalidator.ValidateStruct(p)
+	if errCreate != nil {
+		return errCreate
+	}
+
+	return
+}

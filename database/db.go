@@ -28,7 +28,7 @@ func ConnectDB() *gorm.DB {
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		panic(err.Error())
+		panic(err)
 	}
 
 	db.Debug().AutoMigrate(models.User{}, models.Social{}, models.Photo{}, models.Comment{})

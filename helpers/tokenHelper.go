@@ -34,7 +34,7 @@ func ValidateToken(tokenString string) (interface{}, error) {
 		return nil, err
 	}
 
-	if _, ok := token.Claims.(jwt.MapClaims); !ok && !token.Valid {
+	if _, ok := token.Claims.(jwt.MapClaims); !ok || !token.Valid {
 		return nil, fmt.Errorf("unauthorized")
 	}
 

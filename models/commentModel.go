@@ -27,3 +27,12 @@ func (c *Comment) BeforeCreate(tx *gorm.DB) (err error) {
 	return
 
 }
+
+func (c *Comment) BeforeUpdate(tx *gorm.DB) (err error) {
+	_, errCreate := govalidator.ValidateStruct(c)
+	if errCreate != nil {
+		return errCreate
+	}
+
+	return
+}

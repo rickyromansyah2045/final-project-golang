@@ -27,11 +27,24 @@ func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 		return errCreate
 	}
 
+	// validasi Password
 	hash, err := helpers.HashPassword(u.Password)
 	if err != nil {
 		return err
 	}
 
 	u.Password = hash
+
+	// validasi umur
+
+	return
+}
+
+func (u *User) BeforeUpdate(tx *gorm.DB) (err error) {
+	_, errCreate := govalidator.ValidateStruct(u)
+	if errCreate != nil {
+		return errCreate
+	}
+
 	return
 }
